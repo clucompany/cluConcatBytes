@@ -1,4 +1,4 @@
-# clucstr
+# cluConcatBytes
 [![Build Status](https://travis-ci.org/clucompany/cluConcatBytes.svg?branch=master)](https://travis-ci.org/clucompany/cluConcatBytes)
 [![Apache licensed](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](./LICENSE)
 [![crates.io](http://meritbadge.herokuapp.com/cluConcatBytes)](https://crates.io/crates/cluConcatBytes)
