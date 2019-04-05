@@ -5,7 +5,7 @@
 [![crates.io](http://meritbadge.herokuapp.com/cluConcatBytes)](https://crates.io/crates/cluConcatBytes)
 [![Documentation](https://docs.rs/cluConcatBytes/badge.svg)](https://docs.rs/cluConcatBytes)
 
-Merges literals into a static array.
+Merges literals into a static array. Plugin for compiler.
 
 
 # Use

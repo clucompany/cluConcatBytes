@@ -18,7 +18,8 @@
 
 /*!
 
-Merges literals into a static array.
+Merges literals into a static array. Plugin for compiler.
+
 
 # Use
 
