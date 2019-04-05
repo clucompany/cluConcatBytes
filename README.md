@@ -6,6 +6,8 @@
 
 # Use
 
+Merges literals into a static array.
+
 1. Easy use
 
 ```
