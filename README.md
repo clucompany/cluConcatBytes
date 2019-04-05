@@ -6,7 +6,7 @@
 
 # Use
 
-1. Easy use.
+1. Easy use
 
 ```
 #![feature(plugin)]

@@ -22,7 +22,7 @@ Merges literals into a static array.
 
 # Use
 
-1. Easy use.
+1. Easy use
 
 ```
 #![feature(plugin)]
