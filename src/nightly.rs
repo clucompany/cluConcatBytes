@@ -9,11 +9,7 @@ use syntax::ast::LitKind;
 use syntax::ast::Mutability;
 use syntax::ast::LitIntType;
 use syntax::ast::UintTy;
-use syntax::ast::BlockCheckMode;
-use syntax::ast::Block;
-use syntax::ptr::P;
 use syntax::parse::token::Token;
-use syntax::ast;
 use syntax::ast::IntTy;
 
 
@@ -27,9 +23,17 @@ pub fn plugin_registrar(reg: &mut Registry) {
 pub fn cstr(cx: &mut ExtCtxt, sp: Span, args: &[TokenTree]) -> Box<MacResult + 'static> {
 	let mut parser = cx.new_parser_from_tts(args);
 	
+	
+	let mut the_slice = true;
+	
 	let mut args_len = args.len();
 	let mut array_expr = Vec::with_capacity(args_len / 2);
 	if args_len > 0 {
+		if parser.eat(&Token::At) {
+			the_slice = false;
+			args_len -= 1;
+		}
+		
 		match parser.parse_expr() {
 			Ok(a) => array_expr.push(a),
 			Err(_e) => {
@@ -74,8 +78,8 @@ pub fn cstr(cx: &mut ExtCtxt, sp: Span, args: &[TokenTree]) -> Box<MacResult + '
 							);
 						}
 					},
-					LitKind::ByteStr(ref array) => {	
-						let array = array.as_slice();					
+					LitKind::ByteStr(ref array) => {
+						let array = array.as_slice();
 						for a in array.into_iter() {
 							r_array.push(
 								cx.expr_lit(sp, LitKind::Int(*a as u128, LitIntType::Unsigned(UintTy::U8)))
@@ -91,6 +95,7 @@ pub fn cstr(cx: &mut ExtCtxt, sp: Span, args: &[TokenTree]) -> Box<MacResult + '
 							return DummyResult::any(sp);
 						}
 					},*/
+					//Del int.
 					
 					LitKind::Int(ref a, LitIntType::Unsigned(UintTy::U8)) 
 					| LitKind::Int(ref a, LitIntType::Signed(IntTy::I8))
@@ -116,38 +121,25 @@ pub fn cstr(cx: &mut ExtCtxt, sp: Span, args: &[TokenTree]) -> Box<MacResult + '
 				return DummyResult::any(sp);
 			}
 		}
-		drop(unk);
 	}
 
 	//END ARRAY
 	
-	let result = cx.expr(
-		sp, 
-		ExprKind::AddrOf(Mutability::Immutable,
-			cx.expr(sp, ExprKind::Array(r_array)) //[u8]
-			//ARRAY EXPR u8 -> EXPR [U8]
-		) 
-	);// & [u8]
+	let mut result = cx.expr(sp, ExprKind::Array(r_array));
+	//Array -> [u8]
+	
+	if the_slice {
+		result = cx.expr(
+			sp, 
+			ExprKind::AddrOf(Mutability::Immutable,
+				result //[u8]
+			) 
+		);// & [u8]
+	}
 	
 	MacEager::expr({
-		let block = P(Block {
-			stmts: { //{block}
-				let mut r = Vec::with_capacity(1);
-				r.push(
-					cx.stmt_expr(result) //ADD EXPR TO BLOCK
-				);
-				r
-			},
-			id: ast::DUMMY_NODE_ID,
-			rules: BlockCheckMode::Default, //<-- UNSAFE
-			span: sp, 
-			
-			//recovered: false,
-			//FIX!, UPDATE RUST:((
-		});
-		//cx.expr(sp, Expr::E) //RESULT EXPR
-		cx.expr_block(block)
-	})// { &[u8] }
+		result
+	})// & [u8]
 }
 
 

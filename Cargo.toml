@@ -1,6 +1,6 @@
 [package]
 name = "cluConcatBytes"
-version = "0.1.2"
+version = "0.1.4"
 authors = ["Denis Kotlyarov (Денис Котляров) <denis2005991@gmail.com>"]
 repository = "https://github.com/clucompany/cluConcatBytes.git"
 edition = "2018"
@@ -8,7 +8,7 @@ edition = "2018"
 license = "Apache-2.0"
 readme = "README.md"
 
-description = ""
+description = "Merges literals into a static array."
 keywords = ["concat", "concat_byte_array", "concat_bytes", "clucompany"]
 categories = ["development-tools::ffi"]
 
