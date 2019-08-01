@@ -112,6 +112,7 @@ Copyright 2019 #UlinProject Denis Kotlyarov (Денис Котляров)
 Licensed under the Apache License, Version 2.0
 */
 
+#![allow(non_snake_case)]
 #![feature(plugin_registrar)]
 #![feature(rustc_private)]
 

@@ -9,7 +9,8 @@ use syntax::ast::LitKind;
 use syntax::ast::Mutability;
 use syntax::ast::LitIntType;
 use syntax::ast::UintTy;
-use syntax::parse::token::Token;
+use syntax::parse::token::TokenKind;
+
 use syntax::ast::IntTy;
 
 
@@ -20,7 +21,7 @@ pub fn plugin_registrar(reg: &mut Registry) {
 }
 
 #[doc(hidden)]
-pub fn cstr(cx: &mut ExtCtxt, sp: Span, args: &[TokenTree]) -> Box<MacResult + 'static> {
+pub fn cstr(cx: &mut ExtCtxt, sp: Span, args: &[TokenTree]) -> Box<dyn MacResult + 'static> {
 	let mut parser = cx.new_parser_from_tts(args);
 	
 	
@@ -29,7 +30,7 @@ pub fn cstr(cx: &mut ExtCtxt, sp: Span, args: &[TokenTree]) -> Box<MacResult + '
 	let mut args_len = args.len();
 	let mut array_expr = Vec::with_capacity(args_len / 2);
 	if args_len > 0 {
-		if parser.eat(&Token::At) {
+		if parser.eat(&TokenKind::At) {
 			the_slice = false;
 			args_len -= 1;
 		}
@@ -37,12 +38,12 @@ pub fn cstr(cx: &mut ExtCtxt, sp: Span, args: &[TokenTree]) -> Box<MacResult + '
 		match parser.parse_expr() {
 			Ok(a) => array_expr.push(a),
 			Err(_e) => {
-				cx.span_err(parser.span, "incorrect data, was expected: &[u8], str, u8, i8");
+				cx.span_err(parser.prev_span, "incorrect data, was expected: &[u8], str, u8, i8");
 				return DummyResult::any(sp);
 			}
 		}
 		let mut count_elements = 1;
-		while parser.eat(&Token::Comma) {
+		while parser.eat(&TokenKind::Comma) {
 			args_len -= 1;
 			//del comma
 			
@@ -52,13 +53,13 @@ pub fn cstr(cx: &mut ExtCtxt, sp: Span, args: &[TokenTree]) -> Box<MacResult + '
 					array_expr.push(a);
 				},
 				Err(_e) => {
-					cx.span_err(parser.span, "incorrect data, was expected: &[u8], str, u8, i8");
+					cx.span_err(parser.prev_span, "incorrect data, was expected: &[u8], str, u8, i8");
 					return DummyResult::any(sp);
 				},
 			}
 		}
 		if count_elements != args_len {
-			cx.span_err(parser.span, "It was expected ',' or closing of a macro.");
+			cx.span_err(parser.prev_span, "It was expected ',' or closing of a macro.");
 			return DummyResult::any(sp);
 		}
 	}
