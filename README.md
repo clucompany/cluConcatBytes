@@ -12,7 +12,7 @@ Merges literals into a static array. Plugin for compiler.
 
 1. Easy use
 
-```
+```rust
 #![feature(plugin)]
 #![plugin(cluConcatBytes)]
 
@@ -58,7 +58,7 @@ fn my_function(array:  &'static [u8]) {
 
 2. Raw use
 
-```
+```rust
 #![feature(plugin)]
 #![plugin(cluConcatBytes)]
 
